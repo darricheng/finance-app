@@ -8,12 +8,52 @@
   import '../app.postcss';
 
   // Other imports
-  import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+  import { AppShell, AppBar, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
 </script>
 
 <AppShell>
   <svelte:fragment slot="header">
-    <AppBar>Hello World</AppBar>
+    <AppBar>
+      <svelte:fragment slot="lead">
+        <TabGroup
+          justify="justify-center"
+          active="variant-filled-primary"
+          hover="hover:variant-soft-primary"
+          flex="flex-1 lg:flex-none"
+          rounded=""
+          border=""
+          class="bg-surface-100-800-token w-full"
+        >
+          <TabAnchor href="/">
+            <svelte:fragment>Home</svelte:fragment>
+          </TabAnchor>
+          <TabAnchor href="/monthly-view">
+            <svelte:fragment>Monthly</svelte:fragment>
+          </TabAnchor>
+          <TabAnchor href="/budget">
+            <svelte:fragment>Budget</svelte:fragment>
+          </TabAnchor>
+          <TabAnchor href="/income">
+            <svelte:fragment>Income</svelte:fragment>
+          </TabAnchor>
+        </TabGroup>
+      </svelte:fragment>
+      <svelte:fragment slot="trail">
+        <TabGroup
+          justify="justify-center"
+          active="variant-filled-primary"
+          hover="hover:variant-soft-primary"
+          flex="flex-1 lg:flex-none"
+          rounded=""
+          border=""
+          class="bg-surface-100-800-token w-full"
+        >
+          <TabAnchor href="/data-input">
+            <svelte:fragment>Data Input</svelte:fragment>
+          </TabAnchor>
+        </TabGroup>
+      </svelte:fragment>
+    </AppBar>
   </svelte:fragment>
   <slot />
 </AppShell>
