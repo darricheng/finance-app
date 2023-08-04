@@ -1,7 +1,34 @@
 use chrono::NaiveDate;
 use csv;
 use serde::{Deserialize, Serialize};
-use std::error::Error;
+
+// Create errors that implements serialize
+// See: https://tauri.app/v1/guides/features/command/#error-handling
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error(transparent)]
+    Io {
+        #[from]
+        source: std::io::Error,
+    },
+    #[error("Error parsing CSV")]
+    CSV {
+        #[from]
+        source: csv::Error,
+    },
+    #[error("Error parsing date, reason: {:?}", reason)]
+    Date { reason: String },
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
+}
+impl serde::Serialize for Error {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
+}
 
 pub struct Expenses {}
 
@@ -31,7 +58,7 @@ impl ExpenseRecord {
     /// Converts an IntermediateExpenseRecord into an ExpenseRecord
     pub fn from_intermediate_expense_record(
         intermediate_record: IntermediateExpenseRecord,
-    ) -> ExpenseRecord {
+    ) -> Result<ExpenseRecord, Error> {
         // date,category,amount,
         let date_str = &intermediate_record.date;
 
@@ -40,31 +67,64 @@ impl ExpenseRecord {
             date_numbers.push(num);
         }
 
-        let day = date_numbers.get(0).unwrap().parse::<u32>().unwrap();
-        let month = date_numbers.get(1).unwrap().parse::<u32>().unwrap();
-        let year = date_numbers.get(2).unwrap().parse::<i32>().unwrap();
+        let (day_str, month_str, year_str) = match (
+            date_numbers.get(0),
+            date_numbers.get(1),
+            date_numbers.get(2),
+        ) {
+            (Some(day), Some(month), Some(year)) => (day, month, year),
+            _ => {
+                return Err(Error::Date {
+                    reason: "Invalid date format".to_string(),
+                })
+            }
+        };
 
-        let date_obj = NaiveDate::from_ymd_opt(year, month, day).unwrap();
+        let (day, month, year) = match (
+            day_str.parse::<u32>(),
+            month_str.parse::<u32>(),
+            year_str.parse::<i32>(),
+        ) {
+            (Ok(day), Ok(month), Ok(year)) => (day, month, year),
+            _ => {
+                return Err(Error::Date {
+                    reason: "Invalid date value(s)".to_string(),
+                })
+            }
+        };
 
-        ExpenseRecord::new(
+        let date_obj = match NaiveDate::from_ymd_opt(year, month, day) {
+            Some(date) => date,
+            None => {
+                return Err(Error::Date {
+                    reason: "Invalid date value(s)".to_string(),
+                })
+            }
+        };
+
+        Ok(ExpenseRecord::new(
             date_obj,
             intermediate_record.category,
             intermediate_record.amount,
-        )
+        ))
     }
 }
 
-pub fn convert_csv_to_expense_record(
-    csv_str: String,
-) -> Result<Vec<ExpenseRecord>, Box<dyn Error>> {
+pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecord>, Error> {
     let mut rdr = csv::Reader::from_reader(csv_str.as_bytes());
     let mut expense_records = Vec::new();
     for result in rdr.deserialize() {
         let record: IntermediateExpenseRecord = result?;
-        expense_records.push(ExpenseRecord::from_intermediate_expense_record(record));
+        expense_records.push(ExpenseRecord::from_intermediate_expense_record(record)?);
     }
 
     Ok(expense_records)
+}
+
+#[tauri::command]
+pub fn input_expenses(data: String) -> Result<(), Error> {
+    convert_csv_to_expense_record(data)?;
+    Ok(())
 }
 
 #[cfg(test)]
