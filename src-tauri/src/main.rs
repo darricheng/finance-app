@@ -14,6 +14,7 @@ fn main() {
         .manage(State(Mutex::new(vec![])))
         .invoke_handler(tauri::generate_handler![
             // commands here
+            expenses::input_expenses
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,3 +1,5 @@
+#![warn()]
+
 use chrono::NaiveDate;
 use csv;
 use serde::{Deserialize, Serialize};
@@ -123,7 +125,8 @@ pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecor
 
 #[tauri::command]
 pub fn input_expenses(data: String) -> Result<(), Error> {
-    convert_csv_to_expense_record(data)?;
+    let expenses = convert_csv_to_expense_record(data)?;
+    todo!("Save expenses to state");
     Ok(())
 }
 
