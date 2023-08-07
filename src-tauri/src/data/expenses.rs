@@ -1,38 +1,21 @@
-#![warn()]
-
 use chrono::NaiveDate;
 use csv;
 use serde::{Deserialize, Serialize};
+use tauri;
 
-// Create errors that implements serialize
-// See: https://tauri.app/v1/guides/features/command/#error-handling
-#[derive(Debug, thiserror::Error)]
-pub enum Error {
-    #[error(transparent)]
-    Io {
-        #[from]
-        source: std::io::Error,
-    },
-    #[error("Error parsing CSV")]
-    CSV {
-        #[from]
-        source: csv::Error,
-    },
-    #[error("Error parsing date, reason: {:?}", reason)]
-    Date { reason: String },
-    #[error(transparent)]
-    Other(#[from] anyhow::Error),
+use crate::errors::Error;
+
+#[derive(Debug, Deserialize)]
+pub struct Expenses {
+    records: Vec<ExpenseRecord>,
 }
-impl serde::Serialize for Error {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_ref())
+impl Expenses {
+    pub fn new() -> Expenses {
+        Expenses {
+            records: Vec::new(),
+        }
     }
 }
-
-pub struct Expenses {}
 
 /// Intermediate struct used to deserialize CSV data into ExpenseRecord structs
 #[derive(Debug, Deserialize)]
@@ -113,7 +96,11 @@ impl ExpenseRecord {
 }
 
 pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecord>, Error> {
-    let mut rdr = csv::Reader::from_reader(csv_str.as_bytes());
+    let mut rdr = csv::ReaderBuilder::new()
+        // input data just as is without the headers, weird to add headers when inputting data
+        // FUTURE: data validation should be done in the frontend
+        .has_headers(false)
+        .from_reader(csv_str.as_bytes());
     let mut expense_records = Vec::new();
     for result in rdr.deserialize() {
         let record: IntermediateExpenseRecord = result?;
@@ -124,9 +111,15 @@ pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecor
 }
 
 #[tauri::command]
-pub fn input_expenses(data: String) -> Result<(), Error> {
+pub fn add_expenses(state: tauri::State<crate::State>, data: String) -> Result<(), Error> {
     let expenses = convert_csv_to_expense_record(data)?;
-    todo!("Save expenses to state");
+
+    let mut expenses_data = state.0.lock().unwrap();
+
+    for record in expenses.into_iter() {
+        expenses_data.expenses.records.push(record);
+    }
+
     Ok(())
 }
 
