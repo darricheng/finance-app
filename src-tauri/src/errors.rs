@@ -8,7 +8,7 @@ pub enum Error {
         source: std::io::Error,
     },
     #[error(transparent)]
-    CSV {
+    Csv {
         #[from]
         source: csv::Error,
     },

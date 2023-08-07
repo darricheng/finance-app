@@ -53,7 +53,7 @@ impl ExpenseRecord {
         }
 
         let (day_str, month_str, year_str) = match (
-            date_numbers.get(0),
+            date_numbers.first(),
             date_numbers.get(1),
             date_numbers.get(2),
         ) {

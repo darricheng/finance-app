@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use tauri;
 
 pub mod expenses;
 
@@ -16,6 +15,6 @@ impl FinanceData {
 }
 
 #[tauri::command]
-pub fn print_state(state: tauri::State<crate::State>) -> () {
+pub fn print_state(state: tauri::State<crate::State>) {
     println!("{:?}", state.0.lock().unwrap())
 }
