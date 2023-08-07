@@ -1,38 +1,21 @@
-# create-svelte
+# Personal Finance App
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A custom-built app to help me better manage my finances.
 
-## Creating a project
+## Background Info
 
-If you're seeing this, you've probably already done this step. Congrats!
+I've never been the best at managing my finances. When I was young, much of my finances were looked over closely by my parents. That meant my overall financial health from an external point of view looks alright, because there are no glaring issues such as large debts or low savings.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+However, their close watch also meant that I didn't develop very strong financial management skills; I have very little idea what I'm doing about my finances. I didn't want to continue down this path, so I started to take action.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+The development of this app is but one step in my journey towards better financial management.
 
-## Developing
+## Goals
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- Keep track of how I'm keeping to my predefined budget
+- Monitor overall spending trends
+- Track my income levels
 
-```bash
-npm run dev
+## Tech
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Built with Tauri using Svelte because I find that I like developing with both Rust and Svelte, and want to further develop proficiency using them.
