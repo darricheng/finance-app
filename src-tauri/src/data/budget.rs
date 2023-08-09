@@ -1,6 +1,11 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use tauri::State;
+use ts_rs::TS;
 
-#[derive(Debug, Deserialize)]
+use crate::AppState;
+
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
 pub struct Budget {
     categories: Vec<Category>,
 }
@@ -15,7 +20,8 @@ impl Budget {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
 struct Category {
     name: String,
     amount: f64,
@@ -33,7 +39,7 @@ impl Category {
 
 #[tauri::command]
 pub fn add_new_budget_category(
-    state: tauri::State<crate::AppState>,
+    state: State<AppState>,
     name: String,
     amount: f64,
     aliases: Vec<String>,
