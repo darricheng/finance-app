@@ -9,6 +9,11 @@
 
   // Other imports
   import { AppShell, AppBar, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+  import { invoke } from '@tauri-apps/api/tauri';
+
+  async function printState() {
+    invoke('print_state');
+  }
 </script>
 
 <AppShell>
@@ -48,6 +53,9 @@
           border=""
           class="bg-surface-100-800-token w-full"
         >
+          <TabAnchor on:click={printState}>
+            <svelte:fragment>PRINT STATE TO TERMINAL</svelte:fragment>
+          </TabAnchor>
           <TabAnchor href="/data-input">
             <svelte:fragment>Data Input</svelte:fragment>
           </TabAnchor>

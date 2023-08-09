@@ -3,10 +3,6 @@
 
   let expense_data = '';
 
-  async function printState() {
-    invoke('print_state');
-  }
-
   async function addExpenses() {
     invoke('add_expenses', { data: expense_data });
   }
@@ -15,9 +11,6 @@
 <div class="grid grid-cols-2 h-5/6">
   <div class="p-4 border-r-2 border-white flex flex-col items-center gap-8">
     <h2 class="h2">Expenses</h2>
-    <button type="button" class="btn variant-filled" on:click={printState}
-      >PRINT STATE TO CONSOLE</button
-    >
     <button type="button" class="btn variant-filled" on:click={addExpenses}>+ Add</button>
     <textarea
       class="textarea grow"

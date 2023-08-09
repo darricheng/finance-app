@@ -1,6 +1,15 @@
 <script lang="ts">
   import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
   import type { TableSource } from '@skeletonlabs/skeleton';
+  import { invoke } from '@tauri-apps/api/tauri';
+
+  const addBudgetCategory = () => {
+    invoke('add_new_budget_category', {
+      name: 'New Category',
+      amount: 1000,
+      aliases: ['new', 'category'],
+    });
+  };
 
   const sourceData = [
     { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -25,7 +34,9 @@
   <div class="grid grid-cols-2 mb-8">
     <h1 class="h1">Budget</h1>
     <div class="flex flex-row-reverse">
-      <button type="button" class="btn variant-filled">+ Add New</button>
+      <button type="button" class="btn variant-filled" on:click={addBudgetCategory}
+        >+ Add New</button
+      >
     </div>
   </div>
   <Table source={tableSimple} />
