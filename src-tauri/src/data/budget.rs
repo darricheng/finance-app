@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use tauri::State;
+use tauri::{command, State};
 use ts_rs::TS;
 
 use crate::AppState;
@@ -37,7 +37,7 @@ impl Category {
     }
 }
 
-#[tauri::command]
+#[command]
 pub fn add_new_budget_category(
     state: State<AppState>,
     name: String,
@@ -50,7 +50,7 @@ pub fn add_new_budget_category(
     user_data.budget.add_category(category);
 }
 
-#[tauri::command]
+#[command]
 pub fn get_budget(state: State<AppState>) -> Budget {
     let user_data = state.0.lock().unwrap();
     user_data.budget.clone()

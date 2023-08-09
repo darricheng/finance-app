@@ -1,8 +1,10 @@
 use serde::Deserialize;
+use tauri::{command, State};
 
 pub mod budget;
 pub mod expenses;
 
+use crate::AppState;
 use budget::Budget;
 
 #[derive(Debug, Deserialize)]
@@ -32,7 +34,7 @@ impl Finances {
     }
 }
 
-#[tauri::command]
-pub fn print_state(state: tauri::State<crate::AppState>) {
+#[command]
+pub fn print_state(state: State<AppState>) {
     println!("{:?}", state.0.lock().unwrap())
 }

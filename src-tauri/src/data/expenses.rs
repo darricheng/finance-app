@@ -1,9 +1,10 @@
 use chrono::NaiveDate;
 use csv;
 use serde::{Deserialize, Serialize};
-use tauri;
+use tauri::{command, State};
 
 use crate::errors::Error;
+use crate::AppState;
 
 #[derive(Debug, Deserialize)]
 pub struct Expenses {
@@ -115,8 +116,8 @@ pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecor
     Ok(expense_records)
 }
 
-#[tauri::command]
-pub fn add_expenses(state: tauri::State<crate::AppState>, data: String) -> Result<(), Error> {
+#[command]
+pub fn add_expenses(state: State<AppState>, data: String) -> Result<(), Error> {
     let mut expenses = convert_csv_to_expense_record(data)?;
 
     let mut user_data = state.0.lock().unwrap();
