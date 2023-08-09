@@ -7,7 +7,7 @@ use std::sync::Mutex;
 mod data;
 mod errors;
 
-use data::{expenses, UserData};
+use data::{budget, expenses, UserData};
 
 /// The main state struct of the application.
 #[derive(Debug, Deserialize)]
@@ -20,6 +20,7 @@ fn main() {
             // commands here
             expenses::add_expenses,
             data::print_state,
+            budget::add_new_budget_category,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
