@@ -24,7 +24,13 @@
 
   onMount(async () => {
     budget = (await getBudget()) as Budget;
-    console.log(budget);
+    if (budget.categories.length === 0) {
+      budget.categories.push({
+        name: 'No Data',
+        amount: 0,
+        aliases: ['No Data'],
+      });
+    }
   });
 
   let table: TableSource;
