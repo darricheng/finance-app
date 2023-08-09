@@ -15,6 +15,9 @@ impl Expenses {
             records: Vec::new(),
         }
     }
+    fn add_records(&mut self, records: &mut Vec<ExpenseRecord>) {
+        self.records.append(records)
+    }
 }
 
 /// Intermediate struct used to deserialize CSV data into ExpenseRecord structs
@@ -114,13 +117,10 @@ pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecor
 
 #[tauri::command]
 pub fn add_expenses(state: tauri::State<crate::AppState>, data: String) -> Result<(), Error> {
-    let expenses = convert_csv_to_expense_record(data)?;
+    let mut expenses = convert_csv_to_expense_record(data)?;
 
     let mut user_data = state.0.lock().unwrap();
-
-    for record in expenses.into_iter() {
-        user_data.finances.expenses.records.push(record);
-    }
+    user_data.finances.expenses.add_records(&mut expenses);
 
     Ok(())
 }
