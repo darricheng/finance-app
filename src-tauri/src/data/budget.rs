@@ -49,3 +49,9 @@ pub fn add_new_budget_category(
     let mut user_data = state.0.lock().unwrap();
     user_data.budget.add_category(category);
 }
+
+#[tauri::command]
+pub fn get_budget(state: State<AppState>) -> Budget {
+    let user_data = state.0.lock().unwrap();
+    user_data.budget.clone()
+}
