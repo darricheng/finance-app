@@ -117,7 +117,7 @@ pub fn add_expenses(state: tauri::State<crate::State>, data: String) -> Result<(
     let mut expenses_data = state.0.lock().unwrap();
 
     for record in expenses.into_iter() {
-        expenses_data.expenses.records.push(record);
+        expenses_data.finances.expenses.records.push(record);
     }
 
     Ok(())

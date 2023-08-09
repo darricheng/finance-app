@@ -1,14 +1,32 @@
 use serde::Deserialize;
 
+pub mod budget;
 pub mod expenses;
 
+use budget::Budget;
+
 #[derive(Debug, Deserialize)]
-pub struct FinanceData {
-    pub expenses: expenses::Expenses,
+pub struct UserData {
+    finances: Finances,
+    budget: Budget,
 }
-impl FinanceData {
-    pub fn new() -> FinanceData {
-        FinanceData {
+impl UserData {
+    pub fn new() -> UserData {
+        UserData {
+            finances: Finances::new(),
+            budget: Budget::new(),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Finances {
+    pub expenses: expenses::Expenses,
+    // to add income struct
+}
+impl Finances {
+    pub fn new() -> Finances {
+        Finances {
             expenses: expenses::Expenses::new(),
         }
     }
