@@ -33,6 +33,6 @@ impl Finances {
 }
 
 #[tauri::command]
-pub fn print_state(state: tauri::State<crate::State>) {
+pub fn print_state(state: tauri::State<crate::AppState>) {
     println!("{:?}", state.0.lock().unwrap())
 }

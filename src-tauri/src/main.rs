@@ -7,15 +7,15 @@ use std::sync::Mutex;
 mod data;
 mod errors;
 
-use data::expenses;
+use data::{expenses, UserData};
 
 /// The main state struct of the application.
 #[derive(Debug, Deserialize)]
-pub struct State(Mutex<data::UserData>);
+pub struct AppState(Mutex<UserData>);
 
 fn main() {
     tauri::Builder::default()
-        .manage(State(Mutex::new(data::UserData::new())))
+        .manage(AppState(Mutex::new(UserData::new())))
         .invoke_handler(tauri::generate_handler![
             // commands here
             expenses::add_expenses,

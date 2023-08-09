@@ -95,6 +95,8 @@ impl ExpenseRecord {
     }
 }
 
+// This function returns exactly the expenses struct
+// In the future can look to make this part of the Expenses impl block
 pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecord>, Error> {
     let mut rdr = csv::ReaderBuilder::new()
         // input data just as is without the headers, weird to add headers when inputting data
@@ -111,13 +113,13 @@ pub fn convert_csv_to_expense_record(csv_str: String) -> Result<Vec<ExpenseRecor
 }
 
 #[tauri::command]
-pub fn add_expenses(state: tauri::State<crate::State>, data: String) -> Result<(), Error> {
+pub fn add_expenses(state: tauri::State<crate::AppState>, data: String) -> Result<(), Error> {
     let expenses = convert_csv_to_expense_record(data)?;
 
-    let mut expenses_data = state.0.lock().unwrap();
+    let mut user_data = state.0.lock().unwrap();
 
     for record in expenses.into_iter() {
-        expenses_data.finances.expenses.records.push(record);
+        user_data.finances.expenses.records.push(record);
     }
 
     Ok(())
