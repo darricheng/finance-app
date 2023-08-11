@@ -1,20 +1,53 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
+  import { modalStore, Table, tableMapperValues } from '@skeletonlabs/skeleton';
   import { invoke } from '@tauri-apps/api/tauri';
 
-  import type { TableSource } from '@skeletonlabs/skeleton';
+  import type { TableSource, ModalSettings } from '@skeletonlabs/skeleton';
   import type { Budget } from '../../../src-tauri/bindings/Budget';
+
+  interface BudgetCategory {
+    name: string;
+    amount: number;
+    aliases: string;
+  }
+  // Type guard for BudgetCategory
+  // See https://bobbyhadz.com/blog/typescript-type-unknown-is-not-assignable-to-type#using-a-type-guard-when-checking-for-objects
+  // Probably overkill here, but something new to try
+  function isBudgetCategory(obj: any): obj is BudgetCategory {
+    return (
+      typeof obj === 'object' &&
+      obj !== null &&
+      'name' in obj &&
+      'amount' in obj &&
+      'aliases' in obj
+    );
+  }
 
   let budget: Budget = {
     categories: [],
   };
 
   const addBudgetCategory = () => {
-    invoke('add_new_budget_category', {
-      name: 'New Category',
-      amount: 1000,
-      aliases: ['new', 'category'],
+    // Promise is used to get the response from the modal
+    new Promise((resolve) => {
+      const newBudgetCategoryModal: ModalSettings = {
+        type: 'component',
+        title: 'New Budget Category',
+        component: 'formModal',
+        response: (res) => resolve(res),
+      };
+      modalStore.trigger(newBudgetCategoryModal);
+    }).then((newCategory) => {
+      if (!isBudgetCategory(newCategory)) return;
+      newCategory.aliases.trim();
+      const re = /\s*(?:,|$)\s*/; // Remove whitespace before and after the comma
+      const aliases = newCategory.aliases.split(re);
+      invoke('add_new_budget_category', {
+        name: newCategory.name,
+        amount: newCategory.amount,
+        aliases,
+      });
     });
   };
 

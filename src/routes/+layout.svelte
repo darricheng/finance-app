@@ -8,14 +8,26 @@
   import '../app.postcss';
 
   // Other imports
-  import { AppShell, AppBar, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+  import { AppShell, AppBar, Modal, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
   import { invoke } from '@tauri-apps/api/tauri';
+  import FormModal from '$lib/components/FormModal.svelte';
+
+  import type { ModalComponent } from '@skeletonlabs/skeleton';
+
+  const modalComponentRegistry: Record<string, ModalComponent> = {
+    formModal: {
+      ref: FormModal,
+      // Provide a template literal for the default component slot
+      slot: '<p>Skeleton</p>',
+    },
+  };
 
   async function printState() {
     invoke('print_state');
   }
 </script>
 
+<Modal components={modalComponentRegistry} />
 <AppShell>
   <svelte:fragment slot="header">
     <AppBar>
