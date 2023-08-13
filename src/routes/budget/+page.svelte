@@ -56,6 +56,8 @@
       });
   };
 
+  // Skeleton Labs doesn't seem to provide an appropriate type for the CustomEvent
+  // that is passed to the Table's on:selected event handler
   const editRow = (meta: any) => {
     new Promise((resolve) => {
       const editBudgetCategoryModal: ModalSettings = {
