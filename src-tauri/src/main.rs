@@ -21,6 +21,7 @@ fn main() {
             expenses::add_expenses,
             data::print_state,
             budget::add_new_budget_category,
+            budget::edit_budget_category,
             budget::get_budget,
         ])
         .run(tauri::generate_context!())

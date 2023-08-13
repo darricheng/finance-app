@@ -56,6 +56,33 @@
       });
   };
 
+  const editRow = (meta: any) => {
+    new Promise((resolve) => {
+      const editBudgetCategoryModal: ModalSettings = {
+        type: 'component',
+        title: `Edit Category: ${meta.detail[0]}`,
+        component: 'formModal',
+        response: (res) => resolve(res),
+      };
+      modalStore.trigger(editBudgetCategoryModal);
+    })
+      .then((editCategory) => {
+        if (!isBudgetCategory(editCategory)) return;
+        editCategory.aliases.trim();
+        const re = /\s*(?:,|$)\s*/; // Remove whitespace before and after the comma
+        const aliases = editCategory.aliases.split(re);
+        invoke('edit_budget_category', {
+          name: editCategory.name,
+          amount: editCategory.amount,
+          aliases,
+        });
+      })
+      .finally(() => {
+        // Refetch the budget and update the table with the new category
+        getBudget();
+      });
+  };
+
   const getBudget = async () => {
     budget = (await invoke('get_budget')) as Budget;
     if (budget.categories.length === 0) {
@@ -75,6 +102,7 @@
   $: table = {
     head: ['Category', 'Amount', 'Aliases'],
     body: tableMapperValues(budget.categories, ['name', 'amount', 'aliases']),
+    meta: tableMapperValues(budget.categories, ['name', 'amount', 'aliases']),
   };
 </script>
 
@@ -87,5 +115,6 @@
       >
     </div>
   </div>
-  <Table bind:source={table} />
+  <p>Click on the row to edit it</p>
+  <Table bind:source={table} interactive={true} on:selected={editRow} />
 </div>

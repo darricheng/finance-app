@@ -51,6 +51,18 @@ pub fn add_new_budget_category(
 }
 
 #[command]
+pub fn edit_budget_category(
+    state: State<AppState>,
+    name: String,
+    amount: f64,
+    aliases: Vec<String>,
+) {
+    println!("{name:?} {amount:?} {aliases:?}");
+    println!("{:?}", category);
+    todo!("find the category in the state then edit it")
+}
+
+#[command]
 pub fn get_budget(state: State<AppState>) -> Budget {
     let user_data = state.0.lock().unwrap();
     user_data.budget.clone()
