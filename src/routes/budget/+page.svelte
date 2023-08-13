@@ -38,25 +38,26 @@
         response: (res) => resolve(res),
       };
       modalStore.trigger(newBudgetCategoryModal);
-    }).then((newCategory) => {
-      if (!isBudgetCategory(newCategory)) return;
-      newCategory.aliases.trim();
-      const re = /\s*(?:,|$)\s*/; // Remove whitespace before and after the comma
-      const aliases = newCategory.aliases.split(re);
-      invoke('add_new_budget_category', {
-        name: newCategory.name,
-        amount: newCategory.amount,
-        aliases,
+    })
+      .then((newCategory) => {
+        if (!isBudgetCategory(newCategory)) return;
+        newCategory.aliases.trim();
+        const re = /\s*(?:,|$)\s*/; // Remove whitespace before and after the comma
+        const aliases = newCategory.aliases.split(re);
+        invoke('add_new_budget_category', {
+          name: newCategory.name,
+          amount: newCategory.amount,
+          aliases,
+        });
+      })
+      .finally(() => {
+        // Refetch the budget and update the table with the new category
+        getBudget();
       });
-    });
   };
 
-  const getBudget = () => {
-    return invoke('get_budget');
-  };
-
-  onMount(async () => {
-    budget = (await getBudget()) as Budget;
+  const getBudget = async () => {
+    budget = (await invoke('get_budget')) as Budget;
     if (budget.categories.length === 0) {
       budget.categories.push({
         name: 'No Data',
@@ -64,6 +65,10 @@
         aliases: ['No Data'],
       });
     }
+  };
+
+  onMount(async () => {
+    getBudget();
   });
 
   let table: TableSource;
