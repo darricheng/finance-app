@@ -35,6 +35,11 @@ impl Category {
             aliases,
         }
     }
+    fn edit_category(&mut self, new_name: String, new_amount: f64, new_aliases: Vec<String>) {
+        self.name = new_name;
+        self.amount = new_amount;
+        self.aliases = new_aliases;
+    }
 }
 
 #[command]
@@ -53,13 +58,20 @@ pub fn add_new_budget_category(
 #[command]
 pub fn edit_budget_category(
     state: State<AppState>,
-    name: String,
-    amount: f64,
-    aliases: Vec<String>,
+    old_name: String,
+    new_name: String,
+    new_amount: f64,
+    new_aliases: Vec<String>,
 ) {
-    println!("{name:?} {amount:?} {aliases:?}");
-    println!("{:?}", category);
-    todo!("find the category in the state then edit it")
+    let mut user_data = state.0.lock().unwrap();
+    let some_category = user_data
+        .budget
+        .categories
+        .iter_mut()
+        .find(|x| x.name == old_name);
+    if let Some(category) = some_category {
+        category.edit_category(new_name, new_amount, new_aliases)
+    }
 }
 
 #[command]

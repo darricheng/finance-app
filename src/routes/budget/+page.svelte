@@ -74,9 +74,10 @@
         const re = /\s*(?:,|$)\s*/; // Remove whitespace before and after the comma
         const aliases = editCategory.aliases.split(re);
         invoke('edit_budget_category', {
-          name: editCategory.name,
-          amount: editCategory.amount,
-          aliases,
+          oldName: meta.detail[0],
+          newName: editCategory.name,
+          newAmount: editCategory.amount,
+          newAliases: aliases,
         });
       })
       .finally(() => {
