@@ -88,13 +88,6 @@
 
   const getBudget = async () => {
     budget = (await invoke('get_budget')) as Budget;
-    if (budget.categories.length === 0) {
-      budget.categories.push({
-        name: 'No Data',
-        amount: 0,
-        aliases: ['No Data'],
-      });
-    }
   };
 
   onMount(async () => {
@@ -118,6 +111,8 @@
       >
     </div>
   </div>
-  <p>Click on the row to edit it</p>
+  {#if budget.categories.length !== 0}
+    <p class="italic">Click on the row to edit it</p>
+  {/if}
   <Table bind:source={table} interactive={true} on:selected={editRow} />
 </div>
