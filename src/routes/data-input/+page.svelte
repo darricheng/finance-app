@@ -22,6 +22,10 @@
     <h2 class="h2">Income</h2>
     <form class="flex flex-col gap-4">
       <label class="label">
+        <span>Date</span>
+        <input class="input" title="Date" type="date" />
+      </label>
+      <label class="label">
         <span>Source</span>
         <input class="input" title="Source" type="text" placeholder="e.g. main job" />
       </label>
