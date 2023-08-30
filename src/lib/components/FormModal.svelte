@@ -32,9 +32,14 @@
 {#if $modalStore[0]}
   <div class="modal-example-form {cBase}">
     <header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
-    <!-- TODO! Find a way to either submit with enter keydown or prevent it altogether -->
-    <!-- Currently, pressing enter closes the modal but doesn't submit the form -->
-    <form class="modal-form {cForm}">
+    <!-- submit handles button click, keydown handles pressing enter in any input -->
+    <form
+      class="modal-form {cForm}"
+      on:submit={onFormSubmit}
+      on:keydown={(e) => {
+        if (e.key === 'Enter') onFormSubmit();
+      }}
+    >
       <label class="label">
         <span>Category Name</span>
         <input class="input" type="text" bind:value={formData.name} placeholder="e.g. Transport" />
@@ -56,9 +61,7 @@
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
           >{parent.buttonTextCancel}</button
         >
-        <button class="btn {parent.buttonPositive}" type="submit" on:click={onFormSubmit}
-          >Submit Form</button
-        >
+        <button class="btn {parent.buttonPositive}" type="submit">Submit Form</button>
       </div>
     </form>
   </div>
