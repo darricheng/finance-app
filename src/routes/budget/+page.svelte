@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { modalStore, Table, tableMapperValues } from '@skeletonlabs/skeleton';
+  import { getModalStore, Table, tableMapperValues } from '@skeletonlabs/skeleton';
   import { invoke } from '@tauri-apps/api/tauri';
 
   import type { TableSource, ModalSettings } from '@skeletonlabs/skeleton';
   import type { Budget } from '../../../src-tauri/bindings/Budget';
+
+  const modalStore = getModalStore();
 
   interface BudgetCategory {
     name: string;

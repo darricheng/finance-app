@@ -1,18 +1,16 @@
 <script lang="ts">
-  // Skeleton imports
-  // The ordering of these imports is critical to your app working properly
-  import '@skeletonlabs/skeleton/themes/theme-modern.css';
-  // If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
-  import '@skeletonlabs/skeleton/styles/skeleton.css';
-  // Most of your app wide CSS should be put in this file
+  // imports for skeleton and tailwind
   import '../app.postcss';
 
   // Other imports
   import { AppShell, AppBar, Modal, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
   import { invoke } from '@tauri-apps/api/tauri';
   import FormModal from '$lib/components/FormModal.svelte';
+  import { initializeStores } from '@skeletonlabs/skeleton';
 
   import type { ModalComponent } from '@skeletonlabs/skeleton';
+
+  initializeStores(); // Required for certain Skeleton component stores
 
   const modalComponentRegistry: Record<string, ModalComponent> = {
     formModal: {

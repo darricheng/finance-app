@@ -4,7 +4,9 @@
   export let parent: any;
 
   // Stores
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { getModalStore } from '@skeletonlabs/skeleton';
+
+  const modalStore = getModalStore();
 
   // Initial form Data
   const formData = {
