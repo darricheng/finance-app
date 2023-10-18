@@ -3,6 +3,10 @@
   import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+  // Element bindings
+  let chartCanvas: HTMLCanvasElement;
+
+  // NOTE: Mock data for the chart
   let budgetBreakdown = [
     { category: 'Food', amount: 180 },
     { category: 'Transport', amount: 150 },
@@ -17,6 +21,7 @@
     { category: 'Category Z', amount: 333.9 },
   ];
 
+  // Chart data
   let chartValues = financeData.map((data) => data.amount);
   let chartLabels = financeData.map((data) => data.category);
   let chartColors = financeData.map((data) => {
@@ -28,8 +33,8 @@
     if (amountSpent <= budgetedAmount) return 'green'; // within budget!
     else return 'red'; // spent too much
   });
-  let chartCanvas: HTMLCanvasElement;
 
+  // Render the chart
   onMount(async () => {
     new Chart(chartCanvas, {
       type: 'bar',
