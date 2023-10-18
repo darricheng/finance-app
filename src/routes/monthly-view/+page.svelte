@@ -1,21 +1,59 @@
 <script lang="ts">
-  import Chart from 'chart.js/auto';
   import { onMount } from 'svelte';
+  import Chart from 'chart.js/auto';
+  import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-  let chartValues = [20, 10, 5, 2, 20, 30, 45];
-  let chartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  let budgetBreakdown = [
+    { category: 'Food', amount: 180 },
+    { category: 'Transport', amount: 150 },
+    { category: 'Category X', amount: 300 },
+    { category: 'Category Y', amount: 300 },
+  ];
+  let financeData = [
+    { category: 'Food', amount: 111.9 },
+    { category: 'Transport', amount: 111.9 },
+    { category: 'Category X', amount: 333.9 },
+    { category: 'Category Y', amount: 111.9 },
+    { category: 'Category Z', amount: 333.9 },
+  ];
+
+  let chartValues = financeData.map((data) => data.amount);
+  let chartLabels = financeData.map((data) => data.category);
+  let chartColors = financeData.map((data) => {
+    const amountSpent = data.amount;
+    const budgetedAmount = budgetBreakdown.find(
+      (element) => element.category === data.category
+    )?.amount;
+    if (!budgetedAmount) return 'black'; // there is no such budget category
+    if (amountSpent <= budgetedAmount) return 'green'; // within budget!
+    else return 'red'; // spent too much
+  });
   let chartCanvas: HTMLCanvasElement;
 
   onMount(async () => {
     new Chart(chartCanvas, {
       type: 'bar',
+      plugins: [ChartDataLabels], // plugin to show values on the bars
+      options: {
+        plugins: {
+          datalabels: {
+            color: 'white',
+            font: {
+              weight: 'bold',
+            },
+            formatter: (value) => `$${value}`,
+          },
+          legend: {
+            // Remove the single legend at the top of the chart
+            display: false,
+          },
+        },
+      },
       data: {
         labels: chartLabels,
         datasets: [
           {
-            label: 'Revenue',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: chartColors,
             data: chartValues,
           },
         ],
@@ -32,18 +70,12 @@
       <option value="2">Option 2</option>
     </select>
     <div class="border-white border-2 rounded-lg p-4 w-full grow">
-      <div class="flex justify-between">
-        <span>Income</span>
-        <span>5000</span>
-      </div>
-      <div class="flex justify-between">
-        <span>Expenses</span>
-        <span>5000</span>
-      </div>
-      <div class="flex justify-between">
-        <span>Balance</span>
-        <span>5000</span>
-      </div>
+      {#each budgetBreakdown as category}
+        <div class="flex justify-between">
+          <p>{category.category}</p>
+          <p>${category.amount}</p>
+        </div>
+      {/each}
     </div>
   </div>
   <div class="p-4 col-span-3">
