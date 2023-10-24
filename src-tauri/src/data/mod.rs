@@ -3,6 +3,7 @@ use tauri::{command, State};
 
 pub mod budget;
 pub mod expenses;
+pub mod monthly_chart;
 
 use crate::AppState;
 use budget::Budget;
