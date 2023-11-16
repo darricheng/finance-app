@@ -25,7 +25,7 @@ impl UserData {
 #[derive(Debug, Deserialize)]
 pub struct Finances {
     pub expenses: expenses::Expenses,
-    // to add income struct
+    // TODO: add income struct
 }
 impl Finances {
     pub fn new() -> Finances {
