@@ -2,18 +2,19 @@
   import { onMount } from 'svelte';
   import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
+  import { invoke } from '@tauri-apps/api/tauri';
+
+  type ChartData = {
+    category: string;
+    amount: number;
+  }[];
 
   // Element bindings
   let chartCanvas: HTMLCanvasElement;
 
   // NOTE: Mock data for the chart
-  let budgetBreakdown = [
-    { category: 'Food', amount: 180 },
-    { category: 'Transport', amount: 150 },
-    { category: 'Category X', amount: 300 },
-    { category: 'Category Y', amount: 300 },
-  ];
-  let financeData = [
+  let budgetBreakdown: ChartData = [];
+  let expensesData: ChartData = [
     { category: 'Food', amount: 111.9 },
     { category: 'Transport', amount: 111.9 },
     { category: 'Category X', amount: 333.9 },
@@ -22,9 +23,9 @@
   ];
 
   // Chart data
-  let chartValues = financeData.map((data) => data.amount);
-  let chartLabels = financeData.map((data) => data.category);
-  let chartColors = financeData.map((data) => {
+  let chartValues = expensesData.map((data) => data.amount);
+  let chartLabels = expensesData.map((data) => data.category);
+  let chartColors = expensesData.map((data) => {
     const amountSpent = data.amount;
     const budgetedAmount = budgetBreakdown.find(
       (element) => element.category === data.category
@@ -34,8 +35,16 @@
     else return 'red'; // spent too much
   });
 
+  function updateData(budget, expenses) {
+    budgetBreakdown = budget;
+    // expensesData = expenses;
+  }
+
   // Render the chart
   onMount(async () => {
+    const data: { budget: ChartData; expenses: ChartData } = await invoke('get_monthly_chart_data');
+    console.log(data);
+    updateData(data.budget, data.expenses);
     new Chart(chartCanvas, {
       type: 'bar',
       plugins: [ChartDataLabels], // plugin to show values on the bars

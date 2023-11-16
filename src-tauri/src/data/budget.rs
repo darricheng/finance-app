@@ -18,11 +18,14 @@ impl Budget {
     fn add_category(&mut self, category: Category) {
         self.categories.push(category);
     }
+    pub fn get_categories(&mut self) -> Vec<Category> {
+        self.categories.clone()
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[ts(export)]
-struct Category {
+pub struct Category {
     name: String,
     amount: f64,
     aliases: Vec<String>,
@@ -39,6 +42,9 @@ impl Category {
         self.name = new_name;
         self.amount = new_amount;
         self.aliases = new_aliases;
+    }
+    pub fn get_name_and_amount(&mut self) -> (String, f64) {
+        (self.name.clone(), self.amount)
     }
 }
 
