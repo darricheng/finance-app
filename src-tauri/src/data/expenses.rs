@@ -16,6 +16,10 @@ impl Expenses {
             records: Vec::new(),
         }
     }
+    pub fn get_records(&self) -> &Vec<ExpenseRecord> {
+        &self.records
+    }
+
     fn add_records(&mut self, records: &mut Vec<ExpenseRecord>) {
         self.records.append(records)
     }
@@ -43,6 +47,9 @@ impl ExpenseRecord {
             category,
             amount,
         }
+    }
+    pub fn get_date(&self) -> &NaiveDate {
+        &self.date
     }
     /// Converts an IntermediateExpenseRecord into an ExpenseRecord
     pub fn from_intermediate_expense_record(

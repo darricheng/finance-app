@@ -22,6 +22,7 @@
 
   async function printState() {
     invoke('print_state');
+    invoke('get_month_years');
   }
 </script>
 
