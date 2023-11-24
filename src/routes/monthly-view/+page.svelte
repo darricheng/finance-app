@@ -49,7 +49,7 @@
     const data: {
       budget: ChartData;
       expenses: ChartData;
-    } = await invoke('get_monthly_chart_data', { month: 0 }); // WARN: HARDCODED MONTNH
+    } = await invoke('get_monthly_chart_data', { month: 0 }); // WARN: HARDCODED MONTH
     console.log(data);
     updateData(data.budget, data.expenses);
     new Chart(chartCanvas, {
