@@ -12,7 +12,7 @@
   // Element bindings
   let chartCanvas: HTMLCanvasElement;
 
-  // NOTE: Mock data for the chart
+  // Chart data variable definitions
   let budgetBreakdown: ChartData = [];
   let expensesData: ChartData = [
     { category: 'Food', amount: 111.9 },
@@ -21,23 +21,27 @@
     { category: 'Category Y', amount: 111.9 },
     { category: 'Category Z', amount: 333.9 },
   ];
+  let chartColors: string[] = [];
 
-  // Chart data
+  // TODO: Probably have to shift this into updateData() once I get the data from the backend?
   let chartValues = expensesData.map((data) => data.amount);
   let chartLabels = expensesData.map((data) => data.category);
-  let chartColors = expensesData.map((data) => {
-    const amountSpent = data.amount;
-    const budgetedAmount = budgetBreakdown.find(
-      (element) => element.category === data.category
-    )?.amount;
-    if (!budgetedAmount) return 'black'; // there is no such budget category
-    if (amountSpent <= budgetedAmount) return 'green'; // within budget!
-    else return 'red'; // spent too much
-  });
 
-  function updateData(budget, expenses) {
+  // Update the chart data
+  function updateData(budget: ChartData, expenses: ChartData) {
     budgetBreakdown = budget;
+    // NOTE: This is commented out because the backend does not return the expenses data yet
     // expensesData = expenses;
+
+    chartColors = expensesData.map((data) => {
+      const amountSpent = data.amount;
+      const budgetedAmount = budgetBreakdown.find(
+        (element) => element.category === data.category
+      )?.amount;
+      if (!budgetedAmount) return 'black'; // there is no such budget category
+      if (amountSpent <= budgetedAmount) return 'green'; // within budget!
+      else return 'red'; // spent too much
+    });
   }
 
   // Render the chart
