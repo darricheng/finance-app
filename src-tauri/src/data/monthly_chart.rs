@@ -8,7 +8,10 @@ use tauri::{command, State};
 
 use crate::AppState;
 
-use super::budget::{Budget, Category};
+use super::{
+    budget::{Budget, Category},
+    expenses::Expenses,
+};
 
 // Struct for both the budget and expenses
 // Data sent to frontend should be a vec of this
@@ -17,8 +20,6 @@ struct BudgetDetail {
     category: String,
     amount: f64,
 }
-#[derive(Serialize)]
-struct BudgetData(Vec<BudgetDetail>);
 
 // Struct for the monthly chart data
 #[derive(Serialize)]
@@ -28,10 +29,13 @@ pub struct MonthlyData {
 }
 
 #[command]
-pub fn get_monthly_chart_data(state: State<AppState>) -> MonthlyData {
+pub fn get_monthly_chart_data(state: State<AppState>, month: u8) -> MonthlyData {
     let user_data = state.0.lock().unwrap();
     let mut budget_state: Budget = user_data.budget.clone();
-    let expenses = &user_data.finances.expenses;
+    let expenses: &Expenses = &user_data.finances.expenses;
+
+    // TODO: use the month argument to return the correct data to the frontend
+    // I think I'll also need a year argument
 
     let mut categories: HashMap<String, f64> = HashMap::new();
     budget_state

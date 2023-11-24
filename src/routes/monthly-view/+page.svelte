@@ -46,7 +46,10 @@
 
   // Render the chart
   onMount(async () => {
-    const data: { budget: ChartData; expenses: ChartData } = await invoke('get_monthly_chart_data');
+    const data: {
+      budget: ChartData;
+      expenses: ChartData;
+    } = await invoke('get_monthly_chart_data', { month: 0 }); // WARN: HARDCODED MONTNH
     console.log(data);
     updateData(data.budget, data.expenses);
     new Chart(chartCanvas, {
