@@ -24,7 +24,7 @@ fn main() {
             budget::edit_budget_category,
             budget::get_budget,
             monthly_chart::get_monthly_chart_data,
-            monthly_chart::get_month_years,
+            monthly_chart::get_dates,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

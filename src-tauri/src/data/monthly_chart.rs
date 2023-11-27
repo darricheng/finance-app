@@ -68,51 +68,51 @@ pub struct MonthYear {
 }
 
 #[command]
-pub fn get_month_years(state: State<AppState>) -> Vec<MonthYear> {
+pub fn get_dates(state: State<AppState>) -> Vec<MonthYear> {
     let user_data = state.0.lock().unwrap();
     let expenses: &Expenses = &user_data.finances.expenses;
 
     // NOTE: I can get the year and month from the NaiveDate using the Datelike trait
     // See: https://docs.rs/chrono/latest/chrono/naive/struct.NaiveDate.html#impl-Datelike-for-NaiveDate
     // I think I can just get the first and last months, and then generate the months in between
-    let earliest_year = expenses
+    let earliest_date = expenses
         .get_records()
         .iter()
         .min_by(|x, y| x.get_date().cmp(y.get_date()))
         .unwrap() // TODO: Handle the unwraps so that app doesn't crash if there is no data
-        .get_date()
-        .year();
-    let latest_year = expenses
+        .get_date();
+    let latest_date = expenses
         .get_records()
         .iter()
         .max_by(|x, y| x.get_date().cmp(y.get_date()))
         .unwrap()
-        .get_date()
-        .year();
-    let earliest_year_month = expenses
-        .get_records()
-        .iter()
-        .min_by(|x, y| x.get_date().cmp(y.get_date()))
-        .unwrap()
-        .get_date()
-        .month();
-    let latest_year_month = expenses
-        .get_records()
-        .iter()
-        .max_by(|x, y| x.get_date().cmp(y.get_date()))
-        .unwrap()
-        .get_date()
-        .month();
+        .get_date();
+    let earliest_year = earliest_date.year();
+    let latest_year = latest_date.year();
+    let earliest_year_month = earliest_date.month();
+    let latest_year_month = latest_date.month();
 
-    // WARN: Placeholder return value
-    vec![
-        MonthYear {
-            month: 1,
-            year: 2021,
-        },
-        MonthYear {
-            month: 2,
-            year: 2021,
-        },
-    ]
+    let mut month_years = vec![];
+
+    for year in earliest_year..=latest_year {
+        let start_month = if year == earliest_year {
+            earliest_year_month
+        } else {
+            1
+        };
+        let end_month = if year == latest_year {
+            latest_year_month
+        } else {
+            12
+        };
+
+        for month in start_month..=end_month {
+            month_years.push(MonthYear {
+                month: month as u8,
+                year: year as u16,
+            });
+        }
+    }
+
+    month_years
 }

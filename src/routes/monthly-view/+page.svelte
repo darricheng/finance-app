@@ -9,8 +9,16 @@
     amount: number;
   }[];
 
+  type Dates = {
+    month: number;
+    year: number;
+  }[];
+
   // Element bindings
   let chartCanvas: HTMLCanvasElement;
+
+  // Dates variable definitions
+  let dates: Dates = [];
 
   // Chart data variable definitions
   let budgetBreakdown: ChartData = [];
@@ -44,14 +52,18 @@
     });
   }
 
-  // Render the chart
   onMount(async () => {
+    // Get the dates
+    dates = await invoke('get_dates');
+
+    // Get chart data
     const data: {
       budget: ChartData;
       expenses: ChartData;
     } = await invoke('get_monthly_chart_data', { month: 0 }); // WARN: HARDCODED MONTH
-    console.log(data);
     updateData(data.budget, data.expenses);
+
+    // Render the chart
     new Chart(chartCanvas, {
       type: 'bar',
       plugins: [ChartDataLabels], // plugin to show values on the bars
@@ -89,6 +101,9 @@
     <select class="select">
       <option value="1">Option 1</option>
       <option value="2">Option 2</option>
+      {#each dates as date}
+        <option value={date.month}>{date.year} - {date.month}</option>
+      {/each}
     </select>
     <div class="border-white border-2 rounded-lg p-4 w-full grow">
       {#each budgetBreakdown as category}
