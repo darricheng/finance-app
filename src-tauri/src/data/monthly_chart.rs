@@ -89,7 +89,20 @@ pub fn get_month_years(state: State<AppState>) -> Vec<MonthYear> {
         .unwrap()
         .get_date()
         .year();
-    println!("Years: {:?} {:?}", earliest_year, latest_year);
+    let earliest_year_month = expenses
+        .get_records()
+        .iter()
+        .min_by(|x, y| x.get_date().cmp(y.get_date()))
+        .unwrap()
+        .get_date()
+        .month();
+    let latest_year_month = expenses
+        .get_records()
+        .iter()
+        .max_by(|x, y| x.get_date().cmp(y.get_date()))
+        .unwrap()
+        .get_date()
+        .month();
 
     // WARN: Placeholder return value
     vec![
