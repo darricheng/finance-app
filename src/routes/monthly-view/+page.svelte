@@ -103,8 +103,6 @@
   <div class="p-4 flex flex-col gap-4 items-center h-full">
     <h1 class="h1 text-center">Monthly View</h1>
     <select class="select">
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
       {#each dates as date}
         <option value={date.month}>{date.year} - {date.month}</option>
       {/each}
