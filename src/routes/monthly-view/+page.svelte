@@ -55,12 +55,16 @@
   onMount(async () => {
     // Get the dates
     dates = await invoke('get_dates');
+    const earliestDate = dates[0];
 
     // Get chart data
     const data: {
       budget: ChartData;
       expenses: ChartData;
-    } = await invoke('get_monthly_chart_data', { month: 0 }); // WARN: HARDCODED MONTH
+    } = await invoke('get_monthly_chart_data', {
+      month: earliestDate.month,
+      year: earliestDate.year,
+    });
     updateData(data.budget, data.expenses);
 
     // Render the chart

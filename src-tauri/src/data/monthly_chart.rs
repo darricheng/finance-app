@@ -31,7 +31,7 @@ pub struct MonthlyData {
 
 /// Returns the data needed for the monthly chart in the shape required for chart.js
 #[command]
-pub fn get_monthly_chart_data(state: State<AppState>, month: u8) -> MonthlyData {
+pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> MonthlyData {
     let user_data = state.0.lock().unwrap();
     let mut budget_state: Budget = user_data.budget.clone();
     let expenses: &Expenses = &user_data.finances.expenses;
