@@ -72,6 +72,10 @@ pub fn get_dates(state: State<AppState>) -> Vec<MonthYear> {
     let user_data = state.0.lock().unwrap();
     let expenses: &Expenses = &user_data.finances.expenses;
 
+    if expenses.get_records().len() == 0 {
+        return vec![];
+    }
+
     // NOTE: I can get the year and month from the NaiveDate using the Datelike trait
     // See: https://docs.rs/chrono/latest/chrono/naive/struct.NaiveDate.html#impl-Datelike-for-NaiveDate
     // I think I can just get the first and last months, and then generate the months in between
