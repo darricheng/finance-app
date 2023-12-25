@@ -72,6 +72,7 @@ pub fn get_dates(state: State<AppState>) -> Vec<MonthYear> {
     let user_data = state.0.lock().unwrap();
     let expenses: &Expenses = &user_data.finances.expenses;
 
+    // Return empty vec if no data, so that below code no need worry about panicking
     if expenses.get_records().len() == 0 {
         return vec![];
     }
@@ -83,7 +84,7 @@ pub fn get_dates(state: State<AppState>) -> Vec<MonthYear> {
         .get_records()
         .iter()
         .min_by(|x, y| x.get_date().cmp(y.get_date()))
-        .unwrap() // TODO: Handle the unwraps so that app doesn't crash if there is no data
+        .unwrap()
         .get_date();
     let latest_date = expenses
         .get_records()
