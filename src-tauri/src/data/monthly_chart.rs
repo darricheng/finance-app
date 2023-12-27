@@ -8,7 +8,7 @@ use crate::AppState;
 
 use super::{
     budget::{Budget, Category},
-    expenses::Expenses,
+    expenses::{ExpenseRecord, Expenses},
 };
 
 // Struct for both the budget and expenses
@@ -33,10 +33,10 @@ pub struct MonthlyData {
 
 /// Returns the data needed for the monthly chart in the shape required for chart.js
 #[command]
-pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> MonthlyData {
+pub fn get_monthly_chart_data(state: State<AppState>, month: u32, year: i32) -> MonthlyData {
     let user_data = state.0.lock().unwrap();
     let mut budget_state: Budget = user_data.budget.clone();
-    let expenses: &Expenses = &user_data.finances.expenses;
+    let expenses_data: &Expenses = &user_data.finances.expenses;
 
     let mut budget: Vec<BudgetDetail> = vec![];
     budget_state
@@ -46,19 +46,35 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> M
             let (name, amount) = category.get_name_and_amount();
             budget.push(BudgetDetail::new(name, amount))
         });
-    // let budget = categories
-    //     .iter()
-    //     .map(|(name, amount)| BudgetDetail {
-    //         category: name.clone(),
-    //         amount: *amount,
-    //     })
-    //     .collect::<Vec<BudgetDetail>>();
 
-    // TODO: extract the correct set of expenses based on the provided date
-    MonthlyData {
-        budget,
-        expenses: vec![],
-    }
+    let ungrouped_expenses: Vec<&ExpenseRecord> = expenses_data
+        .get_records()
+        .iter()
+        .filter(|x| {
+            let date = x.get_date();
+            let m = date.month();
+            let y = date.year();
+            m == month && y == year
+        })
+        .collect();
+    let mut expenses_map: HashMap<String, f64> = HashMap::new();
+    ungrouped_expenses.iter().for_each(|expense| {
+        let (category, amount) = expense.get_data();
+        if let Some(sum) = expenses_map.get_mut(&category) {
+            *sum += amount;
+        } else {
+            expenses_map.insert(category, amount);
+        };
+    });
+    let mut expenses: Vec<BudgetDetail> = vec![];
+    expenses_map
+        .iter()
+        .for_each(|(k, v)| expenses.push(BudgetDetail::new(k.clone(), *v)));
+
+    // TODO: make total amount for each expense round to an accurate 2dp
+    // Also need to do more thorough testing
+
+    MonthlyData { budget, expenses }
 }
 
 #[derive(Serialize)]

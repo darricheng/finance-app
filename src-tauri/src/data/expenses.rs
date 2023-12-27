@@ -51,6 +51,9 @@ impl ExpenseRecord {
     pub fn get_date(&self) -> &NaiveDate {
         &self.date
     }
+    pub fn get_data(&self) -> (String, f64) {
+        (self.category.clone(), self.amount)
+    }
     /// Converts an IntermediateExpenseRecord into an ExpenseRecord
     pub fn from_intermediate_expense_record(
         intermediate_record: IntermediateExpenseRecord,
