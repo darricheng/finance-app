@@ -18,6 +18,11 @@ struct BudgetDetail {
     category: String,
     amount: f64,
 }
+impl BudgetDetail {
+    fn new(category: String, amount: f64) -> BudgetDetail {
+        BudgetDetail { category, amount }
+    }
+}
 
 // Struct for the monthly chart data
 #[derive(Serialize)]
@@ -33,21 +38,21 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> M
     let mut budget_state: Budget = user_data.budget.clone();
     let expenses: &Expenses = &user_data.finances.expenses;
 
-    let mut categories: HashMap<String, f64> = HashMap::new();
+    let mut budget: Vec<BudgetDetail> = vec![];
     budget_state
         .get_categories()
         .iter_mut()
         .for_each(|category: &mut Category| {
             let (name, amount) = category.get_name_and_amount();
-            categories.insert(name, amount);
+            budget.push(BudgetDetail::new(name, amount))
         });
-    let budget = categories
-        .iter()
-        .map(|(name, amount)| BudgetDetail {
-            category: name.clone(),
-            amount: *amount,
-        })
-        .collect::<Vec<BudgetDetail>>();
+    // let budget = categories
+    //     .iter()
+    //     .map(|(name, amount)| BudgetDetail {
+    //         category: name.clone(),
+    //         amount: *amount,
+    //     })
+    //     .collect::<Vec<BudgetDetail>>();
 
     // TODO: extract the correct set of expenses based on the provided date
     MonthlyData {
