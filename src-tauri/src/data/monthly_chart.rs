@@ -1,6 +1,3 @@
-// TODO: Add logic to generate the data needed for the monthly chart
-// See the frontend for the data structure needed
-
 use std::collections::HashMap;
 
 use chrono::Datelike;
@@ -36,9 +33,6 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> M
     let mut budget_state: Budget = user_data.budget.clone();
     let expenses: &Expenses = &user_data.finances.expenses;
 
-    // TODO: use the month argument to return the correct data to the frontend
-    // I think I'll also need a year argument
-
     let mut categories: HashMap<String, f64> = HashMap::new();
     budget_state
         .get_categories()
@@ -55,6 +49,7 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u8, year: u16) -> M
         })
         .collect::<Vec<BudgetDetail>>();
 
+    // TODO: extract the correct set of expenses based on the provided date
     MonthlyData {
         budget,
         expenses: vec![],
