@@ -60,8 +60,12 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u32, year: i32) -> 
     let mut expenses_map: HashMap<String, f64> = HashMap::new();
     ungrouped_expenses.iter().for_each(|expense| {
         let (category, amount) = expense.get_data();
+        if category.to_lowercase() == "income" {
+            return;
+        }
         if let Some(sum) = expenses_map.get_mut(&category) {
-            *sum += amount;
+            let added = *sum + amount;
+            *sum = (added * 100.0).round() / 100.0;
         } else {
             expenses_map.insert(category, amount);
         };
@@ -69,12 +73,7 @@ pub fn get_monthly_chart_data(state: State<AppState>, month: u32, year: i32) -> 
     let mut expenses: Vec<BudgetDetail> = vec![];
     expenses_map
         .iter()
-        .for_each(|(k, v)| expenses.push(BudgetDetail::new(k.clone(), *v)));
-
-    // TODO: make total amount for each expense round to an accurate 2dp
-    // Currently they add up to numbers with many decimal places due to the way floating point
-    // arithmetic works
-    // Also need to do more thorough testing
+        .for_each(|(k, v)| expenses.push(BudgetDetail::new(k.clone(), *v * -1.0)));
 
     MonthlyData { budget, expenses }
 }
