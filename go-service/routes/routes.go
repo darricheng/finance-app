@@ -6,17 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type financeDataInput struct {
-	Date struct {
-		Day   int `json:"day"`
-		Month int `json:"month"`
-		Year  int `json:"year"`
-	} `json:"date"`
-	Category    string  `json:"category"`
-	Amount      float64 `json:"amount"`
-	Description string  `json:"description"`
+type Login struct {
+	User     string `form:"user" json:"user" xml:"user"  binding:"required"`
+	Password string `form:"password" json:"password" xml:"password" binding:"required"`
+}
+
+type SomeStruct struct {
+	SomeField string `json:"somefield" binding:"required"`
 }
 
 func AddRoutes(router *gin.RouterGroup) {
-	router.GET("/", controllers.DefaultController)
+	router.GET("/", controllers.HandleDefaultRoute)
+	router.POST("/new-entry", controllers.HandleNewEntry)
 }
