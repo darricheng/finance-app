@@ -16,6 +16,25 @@ The development of this app is but one step in my journey towards better financi
 - Monitor overall spending trends
 - Track my income levels
 
-## Tech
+### Information Flow for Daily Expenditures
+
+1. Record daily expenditures with Apple shortcuts.
+2. Send information to cloud server for temporary storage.
+3. Retrieve information from server on desktop app launch.
+4. Update local database with information.
+
+## Desktop app
+
+I find that trying to build a custom app for me to better manage my finances is easier to do on desktop. Also, I generally prefer to do such data processing tasks that also involve a great deal of planning on my computer rather than on a phone.
+
+**Tech**
 
 Built with Tauri using Svelte because I find that I like developing with both Rust and Svelte, and want to further develop proficiency using them.
+
+## Server
+
+The server is mainly there because it allows me to be lazy, and I can learn more about building a web server with a personal project. The goal of the web server is to serve as a temporary storage for my data while my computer is off, then send the data to my computer at the right time.
+
+**Tech**
+
+Built with Go, as that is another technology that I want to develop proficiency in.
