@@ -25,9 +25,14 @@ func main() {
 
 	r := gin.Default()
 	v1 := r.Group("/v1")
-	routes.AddRoutes(v1)
 
-	repository.SetupDb()
+	financeEntries := v1.Group("/finance-entry")
+	routes.AddRoutes(financeEntries)
+
+	err := repository.ConnectToDb()
+	if err != nil {
+		log.Fatalf("Could not connect to DB: %v", err)
+	}
 
 	srv := &http.Server{
 		Addr:    ":8080",

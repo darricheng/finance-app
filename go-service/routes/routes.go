@@ -8,5 +8,5 @@ import (
 
 func AddRoutes(router *gin.RouterGroup) {
 	router.GET("/", controllers.HandleDefaultRoute)
-	router.POST("/new-entry", controllers.HandleNewEntry)
+	router.POST("/", controllers.HandleNewEntry)
 }
