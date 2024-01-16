@@ -28,3 +28,6 @@ go.work
 
 # tmp file created by air
 tmp/
+
+# env files
+.env
