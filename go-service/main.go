@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
-	"finance-app-service/routes"
 	"log"
 	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"finance-app-service/repository"
+	"finance-app-service/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +26,8 @@ func main() {
 	r := gin.Default()
 	v1 := r.Group("/v1")
 	routes.AddRoutes(v1)
+
+	repository.SetupDb()
 
 	srv := &http.Server{
 		Addr:    ":8080",
