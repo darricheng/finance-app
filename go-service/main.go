@@ -26,7 +26,7 @@ func main() {
 	r := gin.Default()
 	v1 := r.Group("/v1")
 
-	financeEntries := v1.Group("/finance-entry")
+	financeEntries := v1.Group("/finance-entries")
 	routes.AddRoutes(financeEntries)
 
 	err := repository.ConnectToDb()
