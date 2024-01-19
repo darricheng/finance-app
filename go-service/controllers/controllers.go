@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
+	"time"
 
 	"finance-app-service/models"
 	"finance-app-service/repository"
@@ -21,12 +23,27 @@ func HandleNewEntry(c *gin.Context) {
 		return
 	}
 
-	id, err := repository.CreateFinanceEntry(&json)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var validationErrors []string
+
+	entryDate := json.Date
+	_, dateErr := time.Parse(time.DateOnly, entryDate)
+	if dateErr != nil {
+		validationErrors = append(validationErrors, dateErr.Error())
+	}
+
+	if len(validationErrors) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": strings.Join(validationErrors, "; ")})
+		return
+	}
+
+	id, dbErr := repository.CreateFinanceEntry(&json)
+	if dbErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": dbErr.Error()})
+		return
 	}
 
 	c.String(http.StatusOK, "Success, entry ID: %d", id)
+	return
 }
 
 // Passes the data to the desktop app
