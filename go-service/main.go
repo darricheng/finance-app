@@ -12,6 +12,7 @@ import (
 	"finance-app-service/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 /*
@@ -20,6 +21,12 @@ for the referred code to shutdown the server gracefully
 */
 
 func main() {
+	// load env vars from .env file
+	envErr := godotenv.Load()
+	if envErr != nil {
+		log.Fatal("Failed to load env vars")
+	}
+
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
