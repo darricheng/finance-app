@@ -7,6 +7,7 @@ import (
 )
 
 func AddRoutes(router *gin.RouterGroup) {
-	router.GET("", controllers.HandleDefaultRoute)
+	router.GET("/test", controllers.TestEndpoint)
+	router.GET("", controllers.RetrieveEntries)
 	router.POST("", controllers.HandleNewEntry)
 }

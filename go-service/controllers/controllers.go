@@ -9,8 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleDefaultRoute(c *gin.Context) {
-	c.JSON(http.StatusOK, "test default endpoint success")
+func TestEndpoint(c *gin.Context) {
+	c.JSON(http.StatusOK, "test endpoint success")
 }
 
 // Takes data and stores it temporarily in the storage
